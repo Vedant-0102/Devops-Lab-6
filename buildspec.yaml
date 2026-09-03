@@ -10,11 +10,14 @@ phases:
   build:
     commands:
       - echo "Building Docker image..."
-      - docker build -t "309403336970.dkr.ecr.ap-south-1.amazonaws.com/devops-lab5-app:$CODEBUILD_RESOLVED_SOURCE_VERSION" .
-      - echo "Pushing Docker image..."
-      - docker push "309403336970.dkr.ecr.ap-south-1.amazonaws.com/devops-lab5-app:$CODEBUILD_RESOLVED_SOURCE_VERSION"
+      - docker build -t 309403336970.dkr.ecr.ap-south-1.amazonaws.com/devops-lab5-app:$CODEBUILD_RESOLVED_SOURCE_VERSION .
+
+  post_build:
+    commands:
+      - echo "Pushing Docker image to Amazon ECR..."
+      - docker push 309403336970.dkr.ecr.ap-south-1.amazonaws.com/devops-lab5-app:$CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo "Creating imagedefinitions.json..."
-      - printf '[{"name":"lab5-app","imageUri":"%s"}]' "309403336970.dkr.ecr.ap-south-1.amazonaws.com/devops-lab5-app:$CODEBUILD_RESOLVED_SOURCE_VERSION" > imagedefinitions.json
+      - printf '[{"name":"lab5-app","imageUri":"309403336970.dkr.ecr.ap-south-1.amazonaws.com/devops-lab5-app:%s"}]' "$CODEBUILD_RESOLVED_SOURCE_VERSION" > imagedefinitions.json
 
 artifacts:
   files:
